@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="281a4155-e7b8-4f28-96d6-d9351c6baf21" >
+		<http:listener-connection host="0.0.0.0" port="8083" />
+	</http:listener-config>
+	<flow name="scheduleFlow" doc:id="5b396e0d-049b-46cd-afaa-4a435c6f0309" >
+		<http:listener doc:name="Listener" doc:id="e9f68b19-e2e8-4389-a4ab-23c22bf28bee" config-ref="HTTP_Listener_config" path="/delay"/>
+		<ee:transform doc:name="Transform Message" doc:id="4514dc45-0f36-4b7d-9b54-2b6ead90ea47" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="delayTime" ><![CDATA[%dw 2.0
+import * from dw::Runtime
+output application/json
+var time = payload.time
+---
+{
+	"waitTime": time,
+	"message" : "completed successfully"
+} wait time
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</flow>
+</mule>
